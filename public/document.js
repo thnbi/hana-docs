@@ -1,1 +1,1 @@
-giconst socket = io();
+const socket = io();
