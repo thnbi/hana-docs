@@ -2,12 +2,16 @@ import { setText } from "./document.js";
 
 const socket = io();
 
-function eventTextChangEmit(text) {
-	socket.emit("text-change", text);
+function joinDocument(documentName) {
+	socket.emit("join-document", documentName);
+}
+
+function eventTextChangEmit(data) {
+	socket.emit("text-change", data);
 }
 
 socket.on("text-change-client", (text) => {
 	setText(text);
 });
 
-export { eventTextChangEmit };
+export { eventTextChangEmit, joinDocument };
