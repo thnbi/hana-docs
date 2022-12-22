@@ -1,30 +1,23 @@
 import io from "./server.js";
-
-const documents = [
-	{ name: "JavaScript", text: "JavaScript is a programming language" },
-
-	{ name: "Node", text: "Node" },
-	{ name: "Socket.io", text: "socket.io" },
-];
+import { findDocuments, updateDocument } from "./dbConnect.js";
 
 io.on("connection", (socket) => {
-	console.log("New connection ID: " + socket.id);
-
-	socket.on("join-document", (documentName, getText) => {
+	socket.on("join-document", async (documentName, returnText) => {
 		socket.join(documentName);
-      const document = getDocument(documentName);
 
-		if (document) {
-			getText(document.text);
+		const requestedDocument = await findDocuments(documentName);
+
+		if (requestedDocument) {
+			returnText(requestedDocument.text);
 		}
-		
 	});
 
-	socket.on("text-change", ({ text, documentName }) => {
-		socket.to(documentName).emit("text-change-client", text);
+	socket.on("text-change", async ({ text, documentName }) => {
+		const update = await updateDocument(documentName, text);
+
+		if (update.modifiedCount) {
+			socket.to(documentName).emit("text-change-client", text);
+		}
 	});
 });
 
-function getDocument(documentName) {
-   return documents.find((document) => document.name === documentName);
-}

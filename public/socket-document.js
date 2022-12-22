@@ -3,7 +3,9 @@ import { setText } from "./document.js";
 const socket = io();
 
 function joinDocument(documentName) {
-	socket.emit("join-document", documentName);
+	socket.emit("join-document", documentName, (text) => {
+		setText(text);
+	});
 }
 
 function eventTextChangEmit(data) {

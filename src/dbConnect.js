@@ -3,18 +3,19 @@ import { config } from "dotenv";
 
 config();
 
-const client = new MongoClient(process.env.MONGO_URI)
+const client = new MongoClient(process.env.MONGO_URI);
 
 let documentsCollection;
-try{
-   await client.connect();
 
-   const db = client.db("docs-hana");
-   documentsCollection = db.collection("documents");
+try {
+	await client.connect();
 
-   console.log("Connected to MongoDB");
-}catch(err){
-    console.log(err);
+	const db = client.db("docs-hana");
+	documentsCollection = db.collection("documents");
+
+	console.log("Connected to MongoDB");
+} catch (error) {
+	console.log(error);
 }
 
-export default documentsCollection;
+export { documentsCollection };
